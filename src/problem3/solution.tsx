@@ -52,7 +52,7 @@ const WalletPage = (props: Props) => {
 				setPrices(prices);
 			})
 			.catch((error) => {
-				console.err(error);
+				console.error(error);
 			})
 			.finally(() => {
 				setIsFetchingPrices(false);

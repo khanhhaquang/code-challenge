@@ -29,7 +29,7 @@ const WalletPage: React.FC<Props> = (props: Props) => {
 				setPrices(prices);
 			})
 			.catch((error) => {
-				console.err(error);
+				console.err(error); //TODO: console.error
 			});
 	}, []);
 
