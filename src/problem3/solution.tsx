@@ -66,6 +66,9 @@ const WalletPage = (props: Props) => {
 			if (balance.amount <= 0) return false;
 			return true;
 		});
+
+		if (filteredBalances.length <= 1) return filteredBalances;
+
 		return filteredBalances.sort((lhs: WalletBalance, rhs: WalletBalance) => {
 			const leftPriority = getPriority(lhs.currency);
 			const rightPriority = getPriority(rhs.currency);
@@ -79,8 +82,7 @@ const WalletPage = (props: Props) => {
 	}, [balances]);
 
 	const rows = useMemo(() => {
-		if (isFetchingPrices) return <span>Loading</span>;
-
+		if (!prices.length || !sortedBalances.length) return null;
 		return sortedBalances.map((balance: WalletBalance) => {
 			const priceObj = prices.find((p) => p.currency === balance.currency);
 			if (priceObj === undefined) return null;
@@ -99,5 +101,5 @@ const WalletPage = (props: Props) => {
 		});
 	}, [isFetchingPrices, prices, sortedBalances]);
 
-	return <div {...props}>{rows}</div>; //TODO: there should be a loader while prices is being fetched
+	return <div {...props}>{isFetchingPrices ? <span>Loading</span> : rows}</div>;
 };
