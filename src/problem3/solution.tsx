@@ -59,16 +59,19 @@ const WalletPage = (props: Props) => {
 			});
 	}, []);
 
+	const filteredBalances = useMemo(
+		() =>
+			balances.filter((balance: WalletBalance) => {
+				const balancePriority = getPriority(balance.currency);
+				if (balancePriority <= NO_PRIORITY) return false;
+				if (balance.amount <= 0) return false;
+				return true;
+			}),
+		[balances]
+	);
+
 	const sortedBalances = useMemo(() => {
-		const filteredBalances = balances.filter((balance: WalletBalance) => {
-			const balancePriority = getPriority(balance.currency);
-			if (balancePriority <= NO_PRIORITY) return false;
-			if (balance.amount <= 0) return false;
-			return true;
-		});
-
 		if (filteredBalances.length <= 1) return filteredBalances;
-
 		return filteredBalances.sort((lhs: WalletBalance, rhs: WalletBalance) => {
 			const leftPriority = getPriority(lhs.currency);
 			const rightPriority = getPriority(rhs.currency);
@@ -79,7 +82,7 @@ const WalletPage = (props: Props) => {
 			}
 			return 0;
 		});
-	}, [balances]);
+	}, [filteredBalances]);
 
 	const rows = useMemo(() => {
 		if (!prices.length || !sortedBalances.length) return null;
