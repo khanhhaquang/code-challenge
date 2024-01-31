@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { swap } from '@/services/mocks';
 import { arrayUniqueByKey } from '@/utils/array';
+import { getTokenIcon } from '@/utils/image';
 
 interface Price {
 	currency: string;
@@ -28,7 +29,11 @@ const formSchema = z.object({
 type SwapInput = z.infer<typeof formSchema>;
 
 const FormFieldWrapper = ({ children }: { children: ReactNode }) => {
-	return <div className='flex gap-2 w-full mb-2 items-end rounded-md bg-secondary p-2 relative'>{children}</div>;
+	return (
+		<div className='flex gap-2 w-full mb-2 items-end rounded-lg bg-secondary p-2 relative hover:shadow-md transition-shadow'>
+			{children}
+		</div>
+	);
 };
 
 function App() {
@@ -116,7 +121,7 @@ function App() {
 
 	return (
 		<main className='flex justify-center w-svw min-h-svh'>
-			<Card className='h-max min-w-[600px] px-4 py-3 mt-10 shadow-lg'>
+			<Card className='h-max min-w-[600px] px-4 py-3 mt-10 shadow-lg relative'>
 				<h1 className='font-bold text-xl mb-2'>Swap</h1>
 				<Form {...form}>
 					<form className='flex flex-col' onSubmit={form.handleSubmit(handleSubmit)}>
@@ -149,7 +154,10 @@ function App() {
 											<SelectContent>
 												{filteredPrices.map((p) => (
 													<SelectItem value={p.currency} key={p.currency}>
-														{p.currency}
+														<p className='flex items-center gap-2'>
+															<img alt={p.currency} className='w-4 h-4' src={getTokenIcon(p.currency)} />
+															{p.currency}
+														</p>
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -157,10 +165,15 @@ function App() {
 									</FormItem>
 								)}
 							/>
+							<Button
+								type='button'
+								variant='outline'
+								className='mx-auto my-2 w-fit h-12 outline-2 outline-white absolute left-1/2 -translate-x-1/2 -bottom-10 z-50'
+								onClick={handleSwitching}
+							>
+								<ArrowDownIcon className='w-4 h-4' />
+							</Button>
 						</FormFieldWrapper>
-						<Button type='button' variant='outline' className='mx-auto my-2 w-fit h-fit' onClick={handleSwitching}>
-							<ArrowDownIcon className='w-4 h-4' />
-						</Button>
 						<FormFieldWrapper>
 							<FormField
 								control={form.control}
@@ -190,7 +203,10 @@ function App() {
 											<SelectContent>
 												{filteredPrices.map((p) => (
 													<SelectItem value={p.currency} key={p.currency}>
-														{p.currency}
+														<p className='flex items-center gap-2'>
+															<img alt={p.currency} className='w-4 h-4' src={getTokenIcon(p.currency)} />
+															{p.currency}
+														</p>
 													</SelectItem>
 												))}
 											</SelectContent>
