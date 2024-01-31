@@ -90,14 +90,12 @@ const WalletPage = (props: Props) => {
 			const priceObj = prices.find((p) => p.currency === balance.currency);
 			if (priceObj === undefined) return null;
 
-			const usdValue = priceObj.price * balance.amount;
-
 			return (
 				<WalletRow
 					className={classes.row}
 					key={balance.currency}
 					amount={balance.amount}
-					usdValue={usdValue}
+					usdValue={priceObj.price * balance.amount}
 					formattedAmount={balance.amount.toFixed()}
 				/>
 			);
