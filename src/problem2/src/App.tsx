@@ -12,7 +12,7 @@ import { swap } from '@/services/mocks';
 import { arrayUniqueByKey } from '@/utils/array';
 import { getTokenIcon } from '@/utils/image';
 import { toast } from 'sonner';
-import { Loader, Loader2Icon } from 'lucide-react';
+import { Loader } from 'lucide-react';
 
 interface Price {
 	currency: string;
