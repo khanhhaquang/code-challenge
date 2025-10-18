@@ -3,7 +3,10 @@ import { HTMLAttributes, useEffect, useState, useMemo } from 'react';
 interface WalletBalance {
 	currency: string;
 	amount: number;
-	priority?: number;
+}
+
+interface WalletBalanceWithPriority extends WalletBalance {
+	priority: number;
 }
 
 interface Price {
@@ -12,13 +15,13 @@ interface Price {
 	price: number;
 }
 
-const PRIORITIES: { [type: string]: number } = {
+const PRIORITIES: Readonly<Record<string, number>> = {
 	Osmosis: 100,
 	Ethereum: 50,
 	Arbitrum: 30,
 	Zilliqa: 20,
 	Neo: 20,
-} as const;
+};
 
 const NO_PRIORITY = -99;
 
@@ -42,7 +45,7 @@ class Datasource {
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 const WalletPage = (props: Props) => {
-	const balances = useWalletBalances();
+	const balances: WalletBalance[] = useWalletBalances();
 	const [isFetchingPrices, setIsFetchingPrices] = useState(true);
 	const [prices, setPrices] = useState<Price[]>([]);
 
@@ -61,7 +64,7 @@ const WalletPage = (props: Props) => {
 			});
 	}, []);
 
-	const balancesWithPriority = useMemo(() => {
+	const balancesWithPriority: WalletBalanceWithPriority[] = useMemo(() => {
 		return (
 			balances?.map((balance: WalletBalance) => {
 				return {
@@ -72,9 +75,9 @@ const WalletPage = (props: Props) => {
 		);
 	}, [balances]);
 
-	const filteredBalances = useMemo(
+	const filteredBalances: WalletBalanceWithPriority[] = useMemo(
 		() =>
-			balancesWithPriority.filter(({ amount, priority = NO_PRIORITY }: WalletBalance) => {
+			balancesWithPriority.filter(({ amount, priority }) => {
 				if (priority <= NO_PRIORITY || amount <= 0) return false;
 				return true;
 			}),
@@ -83,10 +86,8 @@ const WalletPage = (props: Props) => {
 
 	const sortedBalances = useMemo(() => {
 		if (filteredBalances.length <= 1) return filteredBalances;
-		return filteredBalances.sort((lhs: WalletBalance, rhs: WalletBalance) => {
-			const leftPriority = lhs.priority ?? NO_PRIORITY;
-			const rightPriority = rhs.priority ?? NO_PRIORITY;
-			return rightPriority - leftPriority;
+		return filteredBalances.sort((lhs, rhs) => {
+			return rhs.priority - lhs.priority;
 		});
 	}, [filteredBalances]);
 
